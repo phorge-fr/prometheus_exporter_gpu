@@ -8,14 +8,24 @@ ENV APP_HOME=/app \
     PIP_NO_CACHE_DIR=1 \
     PORT=8000
 
+RUN sed -i 's/^\(Components:.*\)$/\1 contrib non-free/' /etc/apt/sources.list.d/debian.sources
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       build-essential \
-       gcc \
-       libffi-dev \
-       libssl-dev \
-       ca-certificates \
+       gnupg2 \
        curl \
+       ca-certificates \
+       lsb-release \
+       wget \
+       apt-transport-https \
+       nvidia-smi \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wget https://repo.radeon.com/rocm/rocm.gpg.key -O - | gpg --dearmor | tee /etc/apt/keyrings/rocm.gpg > /dev/null \
+    && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/rocm/apt/7.1 noble main" | tee /etc/apt/sources.list.d/rocm.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+       rocm-smi \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --uid ${UID} ${USER}
