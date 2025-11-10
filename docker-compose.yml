@@ -1,0 +1,11 @@
+services:
+  prometheus_exporter_gpu:
+    build: .
+    container_name: prometheus_exporter_gpu
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - /sys/class/drm/:/sys/class/drm/:ro
+      - /usr/bin/nvidia-smi:/usr/bin/nvidia-smi:ro
+      - /usr/bin/rocm-smi:/usr/bin/rocm-smi:ro
