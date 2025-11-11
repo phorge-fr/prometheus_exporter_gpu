@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    pid: "host"
     devices:
       - /dev/kfd
       - /dev/dri
